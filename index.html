@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Rubies Stream">
+	<link rel="manifest" href="manifest.json?v=1.1">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <title>Rubies Studio</title>
+	<!-- Add the Google Fonts link -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0; /* Remove default body margin */
+            background-image: url('background.png');
+            background-size: 100% 100%; /* Cover the entire window */
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #ffffff; /* Set text color to white for better visibility on the background */
+            overflow: hidden; /* Hide horizontal scrollbar caused by the background image */
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			max-width: 1920px; /* Set your desired fixed width */
+			max-height: 1080px; /* Set your desired fixed height */
+			overflow: hidden; /* Hide content that overflows the fixed dimensions */
+        }
+
+        #radioPlayer {
+            width: 80%; /* Adjusted width to be more responsive */
+            max-width: 400px; /* Maximum width for larger screens */
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for better readability */
+            padding: 15px;
+            border-radius: 10px; /* Rounded corners for a cleaner look */
+        }
+
+        audio {
+            width: 100%;
+            display: none; /* Hide the default audio player */
+        }
+
+        #control {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2px;
+        }
+
+        #playPause {
+            width: 80px;
+            cursor: pointer;
+			margin-bottom: 10px;
+        }
+
+        #host {
+            width: 250px;
+            margin-bottom: 10px;
+        }
+
+        #banner {
+            width: 350px; /* Ensure the banner image fits within the container */
+            margin-bottom: 10px;
+        }
+		
+		#onair {
+			width: 50px;
+            font-size: 14px;
+            color: white;
+            background-color: red;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: auto;
+            margin-top: 2px; /* Add some top margin for separation */
+			margin-bottom: 2px; /* Add some top margin for separation */
+        }
+		
+		#masterclock {
+			width: 80px;
+			background-color: black;
+			color: red;
+			font-family: 'DS-Digital', sans-serif; /* Use 'Dhurjati' font */
+			font-weight: bold; 
+			font-style: italic;
+			font-size: 20px;
+			padding: 2px;
+			border: 1px solid grey;
+			border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+			 /* Adjusted width to fit the content */
+			margin: auto; /* Center the masterclock div */
+			margin-bottom: 5px;
+		}
+		
+		@font-face {
+			font-family: 'DS-Digital';
+			src: url('DS-Digital-BoldItalic.woff2') format('woff2'),
+			url('DS-Digital-BoldItalic.woff') format('woff');
+			font-weight: bold;
+			font-style: italic;
+			font-display: swap;
+		}
+
+		
+		.container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+			padding-bottom: 200px;
+        }
+		
+		
+	
+		/* Add a horizontal line */
+        hr {
+            width: 95%;
+            margin: 2px auto; /* Adjusted margin for spacing */
+            border: 1px solid grey; /* Optional: Add border styling */
+        }
+
+  
+		footer {
+		  margin-top: 20px;
+		}
+
+		a {
+		  color: grey; /* Default color for unvisited links */
+		  text-decoration: none;
+		}
+
+		a:visited {
+		  color: grey; /* Color for visited links */
+		}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <audio id="audioPlayer" poster="cover-art.png">
+            <source src="https://stream.zeno.fm/og9btsnj00tuv" type="audio/mpeg">
+            Your browser does not support the audio tag.
+        </audio>
+		
+
+	
+		<img id="banner" src="banner.png" alt="Banner">
+		<div id="onair"></div>
+		<div id="masterclock"></div>
+		<img id="host" alt="Host">
+
+	   
+	</div>
+	
+	<div id="control">
+			<footer>
+				<p>&copy; 2023 Rubies Studio. All rights reserved.<br>
+				<a href="/terms" target="blank">Terms of Use</a> | <a href="/privacy" target="blank">Privacy Policy</a></p>
+			</footer>
+        <hr>
+		<img id="playPause" src="play.png" alt="Play" onclick="playPause()">
+    </div>
+	
+
+    <script>
+        function playPause() {
+            var audio = document.getElementById('audioPlayer');
+            var playPauseButton = document.getElementById('playPause');
+
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.src = 'pause.png';
+            } else {
+                audio.pause();
+                playPauseButton.src = 'play.png';
+				audio.load(); // Reload the audio player to its latest network state
+            }
+        }
+
+        function setHostImage() {
+            var hostImage = document.getElementById('host');
+            var now = new Date();
+            var gmtPlus6_5Time = now.getTime() + (6.5 * 60 * 60 * 1000); // Adjusted for GMT+6.5
+            var gmtPlus6_5Date = new Date(gmtPlus6_5Time);
+
+            var hours = gmtPlus6_5Date.getUTCHours();
+
+            if (hours >= 5 && hours < 23) {
+                hostImage.src = 'host_1.png';
+            } else {
+                hostImage.src = 'host_2.png';
+            }
+        }
+		
+		function updateOnAirStatus() {
+			var onAirElement = document.getElementById('onair');
+			var now = new Date();
+			var gmtPlus6_5Time = now.getTime() + (6.5 * 60 * 60 * 1000); // Adjusted for GMT+6.5
+			var gmtPlus6_5Date = new Date(gmtPlus6_5Time);
+
+			var hours = gmtPlus6_5Date.getUTCHours();
+
+			// Set text content based on the current time
+			var onAirStatus = (hours >= 5 && hours < 23) ? 'ON AIR' : 'OFF AIR';
+			onAirElement.textContent = onAirStatus;
+
+			// Update the title of the document
+			document.title = 'Rubies Studio'; // + onAirStatus;
+
+			// Show/hide the Web App Banner based on the onAirStatus
+			if (onAirStatus === 'ON AIR') {
+				document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').content = 'black';
+			} else {
+				document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').content = 'default';
+			}
+		}
+
+
+        // Call the updateOnAirStatus function on page load
+        updateOnAirStatus();
+
+        // Call the updateOnAirStatus function every minute to keep the status up-to-date
+        setInterval(updateOnAirStatus, 1000);
+		
+		function updateMasterClock() {
+            var masterClockElement = document.getElementById('masterclock');
+            var now = new Date();
+            var gmtPlus6_5Time = now.getTime() + (6.5 * 60 * 60 * 1000); // Adjusted for GMT+6.5
+            var gmtPlus6_5Date = new Date(gmtPlus6_5Time);
+
+            // Format the time as "HH:mm:ss"
+            var hours = gmtPlus6_5Date.getUTCHours().toString().padStart(2, '0');
+            var minutes = gmtPlus6_5Date.getUTCMinutes().toString().padStart(2, '0');
+            var seconds = gmtPlus6_5Date.getUTCSeconds().toString().padStart(2, '0');
+
+            var formattedTime = hours + ':' + minutes + ':' + seconds;
+
+            // Update the content of the master clock div
+            masterClockElement.textContent = formattedTime;
+        }
+
+        // Call the updateMasterClock function every second
+        setInterval(updateMasterClock, 1000);
+
+        // Call the setHostImage function on page load
+        setHostImage();
+        setInterval(setHostImage, 1000);
+		
+		// Disable right-click
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    // Disable long-press (touch devices)
+    document.addEventListener('touchstart', function (e) {
+        var now = new Date().getTime();
+        var lastTouch = window.lastTouch || now + 1;
+
+        if (now - lastTouch <= 500) {
+            e.preventDefault();
+        }
+
+        window.lastTouch = now;
+    }, true);
+		
+	
+    </script>
+</body>
+</html>

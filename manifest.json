@@ -1,0 +1,18 @@
+{
+  "name": "Rubies Studio",
+  "short_name": "Rubies Studio",
+  "description": "Online Radio App for Rubies",
+  "start_url": "/",
+  "display": "standalone",
+  "fullscreen": true,
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
