@@ -130,24 +130,21 @@
 
         .scrolling-text {
             display: inline-block;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            -webkit-animation: scrolling-animation 30s linear infinite;
-            animation: scrolling-animation 30s linear infinite;
+            transform: translateZ(0); /* Trigger GPU acceleration */
+            will-change: transform; /* Enhance performance */
+            -webkit-transform: translateZ(0); /* For older versions of Safari */
+            animation: scrolling-animation 30s linear infinite; /* Adjusted duration */
             color: white;
             font-size: large;
             font-weight: bold;
             background-color: black;
         }
 
-
         @keyframes scrolling-animation {
             from {
-                -webkit-transform: translateX(100%);
                 transform: translateX(100%);
             }
             to {
-                -webkit-transform: translateX(-100%);
                 transform: translateX(-100%);
             }
         }
