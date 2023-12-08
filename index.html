@@ -122,25 +122,6 @@
 			padding-bottom: 200px;
         }
 		
-        .scrolling-text-container {
-        white-space: nowrap;
-        overflow: hidden;
-        width: 100%;
-        animation: scroll 20s linear infinite;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #ffffff;
-        font-size: 20px;
-        padding: 4px;
-        }
-
-        @keyframes scroll {
-        0% {
-            transform: translateX(100%);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-        }
         
 		
 	
@@ -180,7 +161,7 @@
 		<div id="onair"></div>
 		<div id="masterclock"></div>
 		<img id="host" alt="Host">
-        <div class="scrolling-text-container" id="tickerContainer"></div>
+       
 
 	   
 	</div>
@@ -296,34 +277,6 @@
         window.lastTouch = now;
     }, true);
 	
-
-    async function fetchData() {
-        try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxa18Ad5gIPrtt7-QwTm5_sn2MEENTNDhdzi36l_C8mRPniCzgbnjr8Yh9iUKIzeq3VeQ/exec");
-        const data = await response.json();
-        return data;
-        } catch (error) {
-        console.error("Error fetching data:", error);
-        }
-    }
-
-    async function updateTicker() {
-        const tickerContainer = document.getElementById("tickerContainer");
-        const data = await fetchData();
-
-        if (data && data.length > 0 && data[0].hasOwnProperty("TICKER")) {
-        const tickerValue = data[0].TICKER;
-        tickerContainer.textContent = tickerValue;
-        } else {
-        tickerContainer.textContent = "No data available";
-        }
-    }
-
-    // Update ticker every 60 seconds (adjust the interval as needed)
-    setInterval(updateTicker, 60000);
-
-    // Initial update
-    updateTicker();
     </script>
 </body>
 </html>
