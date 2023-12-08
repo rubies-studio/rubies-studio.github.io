@@ -122,6 +122,29 @@
 			padding-bottom: 200px;
         }
 		
+        .scrolling-text-container {
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            color: aliceblue;
+            font-size: large;
+            font-weight: bold;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            animation: scrolling-animation 30s linear infinite;
+            background-color: black;
+        }
+
+        @keyframes scrolling-animation {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
 		
 	
 		/* Add a horizontal line */
@@ -160,6 +183,9 @@
 		<div id="onair"></div>
 		<div id="masterclock"></div>
 		<img id="host" alt="Host">
+        <div class="scrolling-text-container">
+            <div class="scrolling-text" id="ticker"></div>
+        </div>
 
 	   
 	</div>
@@ -275,6 +301,26 @@
         window.lastTouch = now;
     }, true);
 		
+
+    function fetchData() {
+        // Fetch data from the JSON URL
+        fetch('https://script.google.com/macros/s/AKfycbxa18Ad5gIPrtt7-QwTm5_sn2MEENTNDhdzi36l_C8mRPniCzgbnjr8Yh9iUKIzeq3VeQ/exec')
+            .then(response => response.json())
+            .then(data => {
+                // Get the value at position 0 (assuming data is an array)
+                const tickerValue = data[0].TICKER;
+
+                // Update the scrolling text content
+                document.getElementById('ticker').textContent = tickerValue;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    // Fetch data initially
+    fetchData();
+
+    // Set up automatic data refresh every minute (60,000 milliseconds)
+    setInterval(fetchData, 60000);
 	
     </script>
 </body>
