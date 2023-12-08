@@ -126,26 +126,28 @@
             white-space: nowrap;
             overflow: hidden;
             width: 100%;
-            color: aliceblue;
-            font-size: large;
-            font-weight: bold;
         }
 
         .scrolling-text {
             display: inline-block;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: scrolling-animation 30s linear infinite;
             animation: scrolling-animation 30s linear infinite;
-            background-color: black;
-            padding: 4px;
         }
+
 
         @keyframes scrolling-animation {
             from {
+                -webkit-transform: translateX(100%);
                 transform: translateX(100%);
             }
             to {
+                -webkit-transform: translateX(-100%);
                 transform: translateX(-100%);
             }
         }
+
 		
 	
 		/* Add a horizontal line */
